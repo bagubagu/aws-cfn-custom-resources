@@ -75,7 +75,8 @@ async function sendResponse(
     Status: responseStatus,
     Reason:
       "See the details in CloudWatch Log Stream: " + context.logStreamName,
-    PhysicalResourceId: physicalResourceId || context.logStreamName,
+    // PhysicalResourceId: physicalResourceId || context.logStreamName,
+    PhysicalResourceId: physicalResourceId,
     StackId: event.StackId,
     RequestId: event.RequestId,
     LogicalResourceId: event.LogicalResourceId,

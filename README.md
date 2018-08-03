@@ -1,5 +1,6 @@
 # AWS Cfn Custom Resources
 
+
 This repo contain sources for Bagubagu's made AWS Custom Resources.
 
 | Custom Resource         | Arn                                                                         |
@@ -11,7 +12,7 @@ This repo contain sources for Bagubagu's made AWS Custom Resources.
 
 First, you need to publish these custom resources into your AWS project account. Use the following launch button:
 
-[![Launch Button](assets/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=custom-resources&templateURL=https://s3.amazonaws.com/bagubagu-cfn-templates/aws-cfn-custom-resources.template)
+[![Launch Button](assets/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=custom-resources&templateURL=https://github.com/bagubagu/aws-cfn-custom-resources/dist/packaged.yml)
 
 Then use the custom resources from cloudformation template.
 
@@ -78,3 +79,10 @@ npm test
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html
 - https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
+
+### notes:
+
+```
+cd dist
+npm install --production --no-package-lock
+```

@@ -29,11 +29,11 @@ const context: Context = {
   callbackWaitsForEmptyEventLoop: true,
   functionName: "foo",
   functionVersion: "1.0",
-  invokedFunctionArn: "xxx",
+  invokedFunctionArn: "invoked-function-arn-xxx",
   memoryLimitInMB: 128,
-  awsRequestId: "xxx",
-  logGroupName: "xxx",
-  logStreamName: "xxx",
+  awsRequestId: "aws-request-id-xxx",
+  logGroupName: "log-group-name-xxx",
+  logStreamName: "abcdefghijklmnopqrs",
   identity: null,
   clientContext: null,
   done() {},
@@ -45,18 +45,34 @@ config.region = "us-east-1";
 const credentials = new SharedIniFileCredentials();
 const s3 = new S3({ credentials });
 
+test("Parameter HostedZone is required", async () => {
+  const event = {
+    ...createEvent,
+    ResourceProperties: { ServiceToken: "service-token-xxx" }
+  };
+
+  try {
+    await handler(event, context, () => {});
+  } catch (err) {
+    expect(err).toBeDefined();
+  }
+});
+
 test.skip("create hostedZone", done => {
+  // pay attention to s3 read-write consistency when testing
+
   jest.setTimeout(15000);
   expect.assertions(2);
 
+  const event = { ...createEvent };
   const params = { Bucket: "louislarry-foo", Key: "foo" };
 
   s3.getSignedUrl("putObject", params, async function(err, url) {
     expect(err).toBeNull();
 
-    createEvent.ResponseURL = url;
-    createEvent.RequestType = "Create";
-    await handler(createEvent, context, () => {});
+    event.ResponseURL = url;
+    await handler(event, context, () => {});
+
     const foo = await s3.getObject(params).promise();
     const fooJson = JSON.parse(foo.Body.toString());
 
@@ -65,12 +81,33 @@ test.skip("create hostedZone", done => {
   });
 });
 
-test("Parameter HostedZone is required", async () => {
-  const event = { ...createEvent, ResourceProperties: { ServiceToken: "xxx" } };
+test.skip("HostedZone does not exist", done => {
+  // pay attention to s3 read-write consistency when testing
 
-  try {
+  const event = {
+    ...createEvent,
+    ResourceProperties: {
+      ServiceToken: "service-token-xxx",
+      HostedZone: "non-existent.com"
+    }
+  };
+
+  jest.setTimeout(15000);
+  expect.assertions(2);
+
+  const params = { Bucket: "louislarry-foo", Key: "foo" };
+
+  const s3 = new S3({ credentials });
+  s3.getSignedUrl("putObject", params, async function(err, url) {
+    expect(err).toBeNull();
+
+    event.ResponseURL = url;
     await handler(event, context, () => {});
-  } catch (err) {
-    expect(err).toBeDefined();
-  }
+
+    const foo = await s3.getObject(params).promise();
+    const fooJson = JSON.parse(foo.Body.toString());
+
+    expect(fooJson.PhysicalResourceId).toEqual("");
+    done();
+  });
 });

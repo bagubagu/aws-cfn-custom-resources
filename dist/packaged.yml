@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SAM Template for CloudFormation Custom Resources
+Outputs:
+  HostedZone:
+    Description: Hosted Zone ID
+    Value:
+      Ref: GetHostedZoneIdFunction
+Resources:
+  GetHostedZoneIdFunction:
+    Properties:
+      CodeUri: s3://bagubagu-cfn-custom-resources/4dcd84bd4b8702afbc970f561adb41c3
+      FunctionName: cfnGetHostedZoneId
+      Handler: get-hosted-zone-id.handler
+      Policies:
+      - NetworkAdministrator
+      Runtime: nodejs8.10
+      Timeout: 30
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

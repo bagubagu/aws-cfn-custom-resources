@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SAM Template for cfn custom resource cfnHostedZone
+Outputs:
+  HostedZone:
+    Description: Hosted Zone ID
+    Value:
+      Ref: GetHostedZoneIdFunction
+Resources:
+  GetHostedZoneIdFunction:
+    Properties:
+      CodeUri: s3://bakasang-com-lambdas/febe124e2979df9c24df720f00de158d
+      FunctionName: cfnGetHostedZoneId
+      Handler: get-hosted-zone-id.handler
+      Policies:
+      - NetworkAdministrator
+      Runtime: nodejs8.10
+      Timeout: 30
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

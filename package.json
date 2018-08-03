@@ -1,17 +1,17 @@
 {
-  "name": "@bagubagu/lambda-cfn-hosted-zone",
+  "name": "@bagubagu/aws-cfn-custom-resources",
   "version": "1.0.0",
-  "description": "Cloudformation custom resource to get hosted zone id",
+  "description": "Cloudformation custom resources",
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
     "test": "jest --watchAll",
-    "clean": "rm -rf dist/* && rm -f packaged.yml",
-    "build": "npm run clean && npm run tsc && cp package.json dist/ && cd dist && npm install --production --no-package-lock",
-    "package": "sam package --template-file template.yml --s3-bucket bakasang-com-lambdas --output-template-file packaged.yml > /dev/null",
-    "deploy": "npm run build && npm run package && sam deploy --template-file packaged.yml --stack-name cfn-hosted-zone --capabilities CAPABILITY_NAMED_IAM && npm run clean",
-    "delete": "aws cloudformation delete-stack --stack-name cfn-hosted-zone"
+    "clean": "rm -rf dist/* && rm -f dist/packaged.yml",
+    "build": "npm run clean && npm run tsc",
+    "package": "sam package --template-file template.yml --s3-bucket bagubagu-cfn-custom-resources --output-template-file dist/packaged.yml > /dev/null",
+    "deploy": "npm run build && npm run package && sam deploy --template-file dist/packaged.yml --stack-name custom-resources --capabilities CAPABILITY_NAMED_IAM",
+    "delete": "aws cloudformation delete-stack --stack-name custom-resources"
   },
   "author": "PT Bagubagu Solusi Indonesia",
   "license": "MIT",

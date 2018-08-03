@@ -15,8 +15,6 @@ const aws_sdk_1 = require("aws-sdk");
 const https = require("https");
 const url = require("url");
 exports.handler = (event, context) => __awaiter(this, void 0, void 0, function* () {
-    // console.log("event:", event);
-    // console.log("context:", context);
     // Validate inputs
     if (!event.ResourceProperties.HostedZone) {
         throw new Error("Parameter HostedZone is required");
@@ -26,7 +24,7 @@ exports.handler = (event, context) => __awaiter(this, void 0, void 0, function* 
         case "Create":
         case "Update":
             try {
-                const id = yield getHostedZoneId(event, context);
+                const id = yield getHostedZoneId(event.ResourceProperties.HostedZone);
                 yield sendResponse(event, context, "SUCCESS", {}, id);
             }
             catch (err) {
@@ -43,9 +41,8 @@ exports.handler = (event, context) => __awaiter(this, void 0, void 0, function* 
             }
     }
 });
-function getHostedZoneId(event, context) {
+function getHostedZoneId(hostedZoneName) {
     return __awaiter(this, void 0, void 0, function* () {
-        const name = event.ResourceProperties.HostedZone;
         const r53 = new aws_sdk_1.Route53();
         let hostedZones;
         let hostedZoneId = "";
@@ -55,7 +52,7 @@ function getHostedZoneId(event, context) {
         catch (err) {
             throw err;
         }
-        const filteredZones = hostedZones.HostedZones.filter(hostedZone => hostedZone.Name === `${name}.`);
+        const filteredZones = hostedZones.HostedZones.filter(hostedZone => hostedZone.Name === `${hostedZoneName}.`);
         if (filteredZones.length > 0) {
             const id = filteredZones[0].Id;
             hostedZoneId = id.replace(/\/hostedzone\//g, "");
@@ -68,7 +65,8 @@ function sendResponse(event, context, responseStatus, responseData, physicalReso
         const responseBody = JSON.stringify({
             Status: responseStatus,
             Reason: "See the details in CloudWatch Log Stream: " + context.logStreamName,
-            PhysicalResourceId: physicalResourceId || context.logStreamName,
+            // PhysicalResourceId: physicalResourceId || context.logStreamName,
+            PhysicalResourceId: physicalResourceId,
             StackId: event.StackId,
             RequestId: event.RequestId,
             LogicalResourceId: event.LogicalResourceId,

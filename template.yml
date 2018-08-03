@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: SAM Template for cfn custom resource cfnHostedZone
+Description: SAM Template for CloudFormation Custom Resources
     
 Resources:
-  HostedZoneFunction:
+  GetHostedZoneIdFunction:
     # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Type: AWS::Serverless::Function 
     Properties:
@@ -22,4 +22,4 @@ Resources:
 Outputs:
   HostedZone:
     Description: "Hosted Zone ID"
-    Value: !Ref HostedZoneFunction
+    Value: !Ref GetHostedZoneIdFunction
