@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for cfn custom resource cfnHostedZone
+    
+Resources:
+  HostedZoneFunction:
+    # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function 
+    Properties:
+      Handler: get-hosted-zone-id.handler
+      Runtime: nodejs8.10
+      CodeUri: dist/get-hosted-zone-id
+      FunctionName: cfnGetHostedZoneId
+      Timeout: 30
+      # https://github.com/awslabs/serverless-application-model/blob/develop/examples/2016-10-31/policy_templates/all_policy_templates.yaml
+      # https://github.com/awslabs/serverless-application-model/blob/develop/docs/policy_templates_data/policy_templates.json
+      # https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html
+      Policies:
+        - NetworkAdministrator
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
+Outputs:
+  HostedZone:
+    Description: "Hosted Zone ID"
+    Value: !Ref HostedZoneFunction
